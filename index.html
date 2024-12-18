@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cardano Epoch Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px;
+            padding: 5px;
+        }
+        .result {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <p>Calculate epoch from time:</p>
+    <input type="datetime" id="dateInput" placeholder="Enter a date">
+    <button onclick="getEpoch()">Get epoch</button>
+    <p>Epoch: <span class="result" id="result1">-</span></p>
+    <p><br/></p>
+    <p>Calculate epoch time:</p>
+    <input type="number" id="epochInput" placeholder="Enter an epoch number" value="328">
+    <button onclick="getTime()">Get timestamp</button>
+    <p>Date and time: <span class="result" id="result2">-</span></p>
+
+    <script type="module">
+        import init, { to_epoch, from_epoch } from './pkg/cardano_epoch.js';
+
+        async function run() {
+            await init();
+
+            const now = new Date();
+            const isoDate = now.toISOString();
+            const ele = document.getElementById('dateInput').value = isoDate;
+
+            window.getEpoch = () => {
+                const input = document.getElementById('dateInput');
+                const resultEl = document.getElementById('result1');
+                const value = input.value;
+                
+                const result = to_epoch(value);
+                resultEl.textContent = result;
+            };
+            window.getTime = () => {
+                const input = document.getElementById('epochInput');
+                const resultEl = document.getElementById('result2');
+                const number = parseInt(input.value, 10);
+                
+                if (!isNaN(number)) {
+                    const result = from_epoch(number);
+                    resultEl.textContent = result;
+                } else {
+                    resultEl.textContent = 'Invalid input';
+                }
+            };
+        }
+
+        run();
+    </script>
+</body>
+</html>
